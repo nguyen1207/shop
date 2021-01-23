@@ -1,0 +1,26 @@
+<div class="mt-5">
+    <div class="row">
+        <div class="col-lg-4">
+            <img src="{{product.image}}" class="product-image" alt="product-image">
+            
+        </div>
+        
+        <div class="col-lg-8">
+            <h2>{{product.name}}</h2>
+            <h3>${{product.price}}</h3>
+            <label for="exampleFormControlSelect1">Qty:</label>
+            <div class="d-flex align-items-center">
+ 
+                        <select class="form-control quantity-form" id="exampleFormControlSelect1">
+                            <option>1</option> 
+                            <option>2</option>
+                        </select>
+                <button type="button" class="btn btn-primary">Add to cart</button>
+            </div>
+        </div>
+        <div class="mt-5">
+            <h3>About this item</h3>
+            <p>{{product.description}}</p>
+        </div>
+    </div>
+</div>

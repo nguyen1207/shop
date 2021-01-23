@@ -1,5 +1,24 @@
 @import 'variable';
 
-h1 {
-    color: $color;
+.card-item {
+    margin-top: 14px;
+}
+
+.image-home {
+    width: 160px;
+    height: 160px;  
+}
+
+.name-home {
+    font-size: 12px;
+}
+
+.product-image {
+    width: 360px;
+    height: 360px;
+}
+
+.quantity-form {
+    width: 120px;
+    margin-right: 8px;
 }
