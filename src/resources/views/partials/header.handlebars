@@ -1,18 +1,27 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="/">HOME</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-            <a class="nav-link" href="/create">Add your product</a>
-        </li>
-        </ul>
-        <form class="form-inline my-2 my-lg-0 ml-auto">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>             
-        </form>
-    </div>
+        <a class="navbar-brand flex-grow-1" href="/">Homepage</a>
+        <div class="d-flex justify-content-center align-items-center container form-inline">
+                <form action="">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button> 
+                </form>
+        </div>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            {{#if user}}
+                <div class="navbar-nav ml-auto">
+                    <a class="nav-item nav-link" href="/account/{{user._id}}">{{user.firstName}} {{user.lastName}}</a>
+                </div>
+                <span class="oi oi-cart cart-icon"></span>
+                <div class="navbar-nav ml-auto">
+                    <a class="nav-item nav-link" href="/account/sign-out">Sign out</a>
+                </div>
+            {{else}}
+                <div class="navbar-nav ml-auto">
+                    <a class="nav-item nav-link" href="/account/sign-in">Sign in</a>
+                </div>
+            {{/if}}
+        </div>
 </nav>

@@ -1,10 +1,11 @@
 const siteRouter = require('./site');
-const categoriesRouter = require('./categories');
-
+const productRouter = require('./product');
+const accountRouter = require('./account');
 
 function route(app) {
     
-    app.use('/category', categoriesRouter);
+    app.use('/category', productRouter);
+    app.use('/account', accountRouter);
     app.use('/', siteRouter);
 }
 

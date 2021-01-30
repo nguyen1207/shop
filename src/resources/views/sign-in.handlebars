@@ -1,0 +1,56 @@
+<form class="mt-4" name="sign-in-form" action="/account/sign-in">
+    <h1>Sign in to your account</h1>
+    <div class="form-group mt-4">
+        <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" placeholder="Email address" required>
+    </div>
+    <div class="form-group">
+        <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+        <div class="sign-in-error"></div>
+    </div>
+    <button type="submit" class="btn btn-primary">Sign in</button>
+</form>
+    <p class="mt-4">Don't have an account?</p>
+    <a class="btn btn-primary" href="/account/sign-up">Create your account</a>
+
+
+<script>
+    
+    
+    const signInForm = document.querySelector('[name="sign-in-form"]');
+    const signInError = document.querySelector('.sign-in-error');
+
+
+
+    signInForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        // Reset error 
+        signInError.textContent = '';
+
+        const email = signInForm.email.value;
+        const password = signInForm.password.value;
+        
+        try {
+            const res = await fetch('/account/sign-in', {
+                method: 'POST',
+                body: JSON.stringify({email: email, password: password}),
+                headers: {'Content-Type': 'application/json'},
+            });
+            const data = await res.json();
+            console.log(data);
+            if(data.errors) {
+                signInError.textContent = data.errors.password || data.errors.email;
+            }
+
+            if(data.user) {
+                location.assign('/');
+            }
+        }
+        catch(err) {
+            console.log(err);
+        }
+    });
+
+    
+    
+</script>
