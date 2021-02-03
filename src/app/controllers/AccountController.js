@@ -1,26 +1,51 @@
 const User = require('../models/User')
 const createToken = require('../../util/createToken');
+const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
+const bcrypt = require('bcryptjs');
+const {mongooseToObject} = require('../../util/mongoose');
 const THREE_DAYS = 3 * 24 * 60 * 60 * 1000;
+
 
 const handleErrors = (err) => {
     
     let errors = {email: '', password: ''};
     console.log(err.message, err.code);
 
-    // Incorrect email 
+    // SIGN IN: Incorrect email 
     if(err.message === 'Your password or email do not match. Please try again or Reset Your Password.') {
         errors.email = 'Your password or email do not match. Please try again or Reset Your Password.';
     }
 
-    // Incorrect password 
-    if(err.message === 'Wrong password. Try again or click Forgot password to reset it.') {
-        errors.password = 'Wrong password. Try again or click Forgot password to reset it.';
+    // SIGN IN: Incorrect password 
+    if(err.message === 'Wrong password. Try again or Reset Your Password.') {
+        errors.password = 'Wrong password. Try again or Reset Your Password.';
     }
 
-    // Duplicate error
+    // SIGN IN, RESET: Password too short
+    if(err.message === 'Password must be at least 6 characters') {
+        errors.password = 'Password must be at least 6 characters';
+    }
+
+    // SIGN UP: Duplicate error
     if(err.code === 11000) {
         errors.email = 'Email has already been used';
         return errors;
+    }
+
+    // SIGN IN: Account not activated
+    if(err.message === 'This account has not been activated please check the email for verification steps') {
+        errors.email = 'This account has not been activated please check the email for verification steps';
+    }
+
+    // FORGOT PASSWORD: Invalid email
+    if(err.message === 'This email does not exist') {
+        errors.email = 'This email does not exist';
+    }
+
+    // RESET: Reset password link has been used but try to access
+    if(err.message === 'You have used this link to reset your password or has been expired. Please try again.') {
+        errors.password = 'You have used this link to reset your password or has been expired. Please try again.';
     }
 
     // Validate errors
@@ -38,17 +63,25 @@ const handleErrors = (err) => {
 class AccountController {
     // [GET] /sign-in
     signIn(req, res, next) {
-        res.render('sign-in');
+        res.render('./authenticate/sign-in', {layout: 'mainNoHeader'});
     }
 
     // [GET] /account/sign-up
     signUp(req, res, next) {
-        res.render('sign-up');
+        res.render('./authenticate/sign-up', {layout: 'mainNoHeader'});
     }
 
     // [GET] /account/:_id
-    myAccount(req, res, next) {
-        res.send('myAccount');
+    async myAccount(req, res, next) {
+        
+        try {
+            const id = req.params._id;
+            const user = await User.findById(id);
+            res.send(user);
+        }
+        catch (err) {
+
+        }
     }
 
     // [POST] /account/sign-up
@@ -57,7 +90,7 @@ class AccountController {
             // Create new user       
             const user = await User.create(req.body);
             const token = createToken(user._id);
-            res.cookie('jwt', token, { httpOnly: true, maxAge: THREE_DAYS });
+            
             
             res.status(201).json({user: user._id});
         }
@@ -69,14 +102,69 @@ class AccountController {
         
     }
 
+    // [GET] /account/sign-up/verify/:_id
+    async verify(req, res, next) {
+        try {
+            const id = req.params._id;
+            console.log(id);
+            const user = await User.findById(id);
+            console.log(user);
+            if(user) {
+                res.render('./authenticate/sign-up-verification', {layout: 'mainNoHeader', user: mongooseToObject(user)});
+                
+                const token = jwt.sign({_id: user._id}, process.env.ACCOUNT_VERIFICATION_KEY);
+
+                var smtpTransport = nodemailer.createTransport({
+                    service: 'Gmail', 
+                    auth: {
+                      user: 'nguyenhoangnguyen061102@gmail.com',
+                      pass: process.env.GMAIL_PASSWORD
+                    }
+                });
+                var mailOptions = {
+                    to: user.email,
+                    from: 'nguyenhoangnguyen061102@gmail.com',
+                    subject: 'Account verification',
+                    text: 'To activate your account please click on the link below or copy/paste into browser address bar\n\n' +
+                    'http://' + req.headers.host + '/account/verify/' + token + '\n\n' +
+                    `Name: ${user.firstName} ${user.lastName}\n` +
+                    `Email: ${user.email}\n` + '\n' +
+                    'Thanks\n' +
+                    'Dev team\n'
+                };
+                smtpTransport.sendMail(mailOptions, function() {
+                    console.log('verification mail sent');
+                });
+            }
+            else {
+                throw Error('404 NOT FOUND')
+            }
+            
+        }
+        catch (err) {
+            res.send('404 NOT FOUND');
+        }
+    }
+
+    // [GET] /account/verify/:token
+    verifySuccess(req, res, next) {
+        res.render('./authenticate/verify-success', {layout: 'mainNoHeader'});
+    }
+
     // [POST] /sign-in
     async checkAccount(req, res, next) {
         const {email, password} = req.body;
         try {
             const user = await User.signIn(email, password);
-            const token = createToken(user._id);
-            res.cookie('jwt', token, { httpOnly: true, maxAge: THREE_DAYS });
-            res.status(200).json({user: user._id});
+            if(user.isActivated) {
+                const token = createToken(user._id);
+                res.cookie('jwt', token, { httpOnly: true, maxAge: THREE_DAYS });
+                res.status(200).json({user: user._id});
+            }
+            else {
+                throw Error('This account has not been activated please check the email for verification steps');
+            }
+            
         }
         catch(err) {
             const errors = handleErrors(err);
@@ -92,6 +180,93 @@ class AccountController {
         res.cookie('jwt', '', {maxAge: 1});
         res.redirect('/');
     }
+
+    // [GET] /account/forgot-password
+    forgotPassword(req, res, next) {
+        res.render('./authenticate/forgot-password', {layout: 'mainNoHeader'});
+    }
+
+    // [PUT] /account/forgot-password
+    async checkForgotPassword(req, res, next) {
+        try {
+            const {email} = req.body;
+            const user = await User.findOne({email: email});
+            if(!user) {
+                throw Error('This email does not exist');
+            }
+            const token = jwt.sign({_id: user._id}, process.env.RESET_PASSWORD_KEY, {expiresIn: '15m'});
+            await user.updateOne({resetPasswordToken: token})
+            
+            var smtpTransport = nodemailer.createTransport({
+                service: 'Gmail', 
+                auth: {
+                  user: 'nguyenhoangnguyen061102@gmail.com',
+                  pass: process.env.GMAIL_PASSWORD
+                }
+            });
+            var mailOptions = {
+                to: user.email,
+                from: 'nguyenhoangnguyen061102@gmail.com',
+                subject: 'Password Reset',
+                text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
+                'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
+                'http://' + req.headers.host + '/account/reset/' + token + '\n\n' +
+                'If you did not request this, please ignore this email and your password will remain unchanged.\n'
+            };
+            smtpTransport.sendMail(mailOptions, function() {
+                console.log('forgot password mail sent');
+            });
+            res.status(200).json({user: user._id});
+        }
+        catch (err) {
+            const errors = handleErrors(err);
+            res.status(400).json({errors});
+        }
+    }
+
+    // [GET] /account/reset/:token
+    resetPassword(req, res, next) {
+        const token = req.params.token;
+        console.log('token ' + token);
+        jwt.verify(token, process.env.RESET_PASSWORD_KEY, function (err){
+            if(err) {
+                res.status(400).json({error: 'This link is invalid or has been expired'});
+            }
+            res.render('./authenticate/reset',{layout: 'mainNoHeader'});
+        })
+        
+    }
+
+    // [PUT] /account/reset/:token
+    async checkResetPassword(req, res, next) {
+        try {
+            const token = req.params.token;
+            const user = await User.findOne({resetPasswordToken: token});
+            if(!user) {
+                throw Error('You have used this link to reset your password or has been expired. Please try again.');
+            }
+
+            let newPassword = req.body.password;
+            
+            if(newPassword.length < 6) {
+                throw Error('Password must be at least 6 characters');
+            }
+
+            const salt = await bcrypt.genSalt();
+            newPassword = await bcrypt.hash(newPassword, salt);
+
+            
+
+            await user.updateOne({password: newPassword, resetPasswordToken: ''});
+            res.status(200).json({user: user._id});
+        }
+        catch(err) {
+            const errors = handleErrors(err);
+            res.status(400).json({errors});
+        }
+    }
+
+
 }
 
 module.exports = new AccountController;

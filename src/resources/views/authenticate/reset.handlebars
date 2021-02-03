@@ -1,0 +1,70 @@
+<div class="container">
+    <div class="row">
+        <div class="col-sm"></div>
+        <div class="col-md">
+            <div class="mt-4 text-center">
+                <h2>Reset your password</h2>
+            </div>
+            <form class="mt-4" name="forgot-password-form">
+                <div class="form-group">
+                    <div class="password-error error"></div>
+                    <div class="form-group">
+                        <input type="password" class="form-control auth-box" id="password" name="password" placeholder="Password" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control auth-box" id="confirm" name="confirm" placeholder="Confirm your password" required>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-outline-primary">Reset your password</button>
+                </div>
+            </form>
+        </div>
+        <div class="col-sm"></div>
+    </div>
+</div>
+
+<script>
+    const resetPasswordForm = document.querySelector('[name="forgot-password-form"]');
+    const passwordError = document.querySelector('.password-error')
+    
+    
+    resetPasswordForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        //Reset error
+
+
+        const pathname = window.location.pathname; // /account/reset/:token
+        const password = resetPasswordForm.password.value;
+        const confirmPassword = resetPasswordForm.confirm.value
+
+        if(confirmPassword !== password) {
+            passwordError.textContent = 'Your password does not match';
+            return;  
+            
+        }
+
+        try {
+            const res = await fetch(pathname, {
+                method: 'PUT',
+                body: JSON.stringify({password: password}),
+                headers: {'Content-Type': 'application/json'},
+            });
+            const data = await res.json();
+            console.log(data);
+
+            if(data.errors) {
+                passwordError.textContent = data.errors.password;
+            }
+
+            if(data.user) {
+                location.assign('/account/sign-in');
+            }
+        }
+        catch(err) {    
+            console.log(err);
+        }
+    })
+
+</script>

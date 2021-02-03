@@ -3,6 +3,7 @@ const morgan = require('morgan');
 const handlebars  = require('express-handlebars');
 const path = require('path');
 const cookieParser = require('cookie-parser');
+;
 
 require('dotenv').config();
 const app = express();
@@ -23,10 +24,16 @@ app.use(express.urlencoded({
 }));
 app.use(express.json());
 app.use(cookieParser());
+
+
 app.use(renderUser);
 
 
-app.engine('handlebars', handlebars());
+app.engine('handlebars', handlebars({
+  helpers: {
+    
+  }
+}));
 app.set('view engine', 'handlebars');
 app.set('views', path.join(__dirname, 'resources\\views'));
 

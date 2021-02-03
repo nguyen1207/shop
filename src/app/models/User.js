@@ -25,6 +25,14 @@ const User = new Schema({
         required: [true, 'Please enter a password'], 
         minlength: [6, 'Password must be at least 6 characters'],
     },
+    resetPasswordToken: {
+        type: String,
+        default: undefined,
+    },
+    isActivated: {
+        type: Boolean,
+        default: false,
+    },
     createdAt: {
         type: Date, 
         default: Date.now
@@ -46,8 +54,11 @@ User.statics.signIn = async function(email, password) {
         const auth = await bcrypt.compare(password, user.password);
         if(auth) {
             return user;
+        } 
+        if(password.length < 6) {
+            throw Error('Password must be at least 6 characters');
         }
-        throw Error('Wrong password. Try again or click Forgot password to reset it.');
+        throw Error('Wrong password. Try again or Reset Your Password.');
     }
     throw Error('Your password or email do not match. Please try again or Reset Your Password.');
 }

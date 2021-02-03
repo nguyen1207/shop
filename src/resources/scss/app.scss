@@ -18,6 +18,49 @@
     height: 360px;
 }
 
+.quantity-form {
+    width: 100px;
+    margin-right: 4px;
+}
+
 .cart-icon {
     color: white;
 }
+
+.error {
+    color: red;
+}
+
+.success {
+    color: green;
+}
+
+.main-wrapper {
+    height: 100vh;
+}
+
+.center {
+    position: absolute;
+    height: 50px;
+    top: 50%;
+    left: 50%;
+    margin-left: -140px; /* margin is -0.5 * dimension */
+    margin-top: -25px; 
+}
+
+.verify {
+    margin-top: 35%;
+    
+}
+
+.auth-box {
+    position: relative;
+    width: 420px;
+    margin: 0 auto; 
+}
+
+.acknowledgement {
+    font-size: 12px;
+    color: rgba(133, 133, 133, 0.986);
+}
+
