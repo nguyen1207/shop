@@ -1,94 +1,128 @@
 <div class="container emp-profile">
-    <form>
-        <div class="row">
-            <div class="col-md-4">
-                
-            </div>
-            <div class="col-md-8">
-                <div class="profile-head">
-                    <h2>
-                        Security and sign in
-                    </h2>  
-                    <hr class="rounded">
-                </div>
+    <div class="row">
+        <div class="col-md-4">
+            
+        </div>
+        <div class="col-md-8">
+            <div class="profile-head">
+                <h2>
+                    Security and sign in
+                </h2>  
+                <hr class="rounded">
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="profile-menu">
-                    <p style="margin-top: 0; margin-bottom: 12px">Account</p>
-                    <a href="/account/personal-information/{{user._id}}">Personal information</a><br/>
-                    <a href="/account/payment-methods/{{user._id}}">Payment methods</a><br/>
-                    <a href="/account/security&sign-in/{{user._id}}" style="margin-right: 100px;">Security and sign in</a>
-                    <a href="/account/purchase-history/{{user._id}}">Purchase history</a>
-                </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="profile-menu">
+                <p style="margin-top: 0; margin-bottom: 12px">Account</p>
+                <a href="/account/personal-information/{{user._id}}">Personal information</a><br/>
+                <a href="/account/payment-methods/{{user._id}}">Payment methods</a><br/>
+                <a href="/account/security&sign-in/{{user._id}}" style="margin-right: 100px;">Security and sign in</a>
+                <a href="/account/purchase-history/{{user._id}}">Purchase history</a>
             </div>
-            <div class="col-md-8">
-                <div class="tab-content profile-tab" id="myTabContent">
-                    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label>Your password</label>
-                            </div>
-                            <div class="col-md-3">
-                                <p>{{showDotPassword user.password}}</p>
-                                
-                            </div>
-                            <div class="col-md-3">
-                                <input type="submit" class="profile-edit-btn" style="float: right; width: 50px" name="btnAddMore" value="Edit"/>
-                            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="tab-content profile-tab" id="myTabContent">
+                <div class="tab-pane fade show active origin" id="home" role="tabpanel" aria-labelledby="home-tab">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Your password</label>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label>Two-Step Verification</label>
-                            </div>
-                            <div class="col-md-6">
-                                {{#if user.TSV}}
-                                    <p>Activated</p>
-                                {{else}}
-                                    <a href="#" style="color: grey; text-decoration: none">Set up now</a>
-                                {{/if}}
-                            </div>
+                        <div class="col-md-3 password">
+                            <p>{{showDotPassword user.password}}</p>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="submit" class="profile-edit-btn password-edit-btn" onclick="show()" style="float: right; width: 50px" name="btnAddMore" value="Edit"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Two-Step Verification</label>
+                        </div>
+                        <div class="col-md-6">
+                            {{#if user.TSV}}
+                                <p>Activated</p>
+                            {{else}}
+                                <a href="#" style="color: grey; text-decoration: none">Set up now</a>
+                            {{/if}}
                         </div>
                     </div>
                 </div>
+
+                <form class="change-password-form" style="display: none;">
+                    <div class="row" style="height: 50px">
+                        <div class="col-md-6">
+                            <label>Current password</label>
+                        </div>
+                        <div class="col-md-6">
+                             <input type="password" class="form-control" id="current-password" name="current-password" required>
+                        </div>
+                    </div>
+                    <div class="row" style="height: 70px">
+                        <div class="col-md-6">
+                            <label>New password</label>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="password" class="form-control" id="new-password" name="new-password" required>
+                            <p style="color: gray; font-size: 14px">Your password must be at least 6 characters</p>
+                        </div>
+                    </div>
+                    <div class="row" style="height: 50px">
+                        <div class="col-md-6">
+                            <label>Verify your password</label>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="password" class="form-control" id="verify-password" name="verify-password" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex" style="float: right">
+                                <button type="submit" class="btn btn-primary" style="margin-right: 12px;">Save</button>
+                                <button onclick="show()" class="btn btn-secondary">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Two-Step Verification</label>
+                        </div>
+                        <div class="col-md-6">
+                            {{#if user.TSV}}
+                                <p>Activated</p>
+                            {{else}}
+                                <a href="#" style="color: grey; text-decoration: none">Set up now</a>
+                            {{/if}}
+                        </div>
+                    </div>
+                </form>
+                
             </div>
-            
         </div>
-    </form>           
+    </div>         
 </div>
-
-
-<div class="mt-4">
-    <form id="form1" style="display: none">
-        <div class="form-group">
-            <label for="email">Email address</label>
-            <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" placeholder="Enter email">
-            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-        </div>
-        <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" class="form-control" id="password" name="password" placeholder="EnterPassword">
-        </div>
-        <div class="form-check">
-            <input type="checkbox" class="form-check-input" id="exampleCheck1">
-            <label class="form-check-label" for="exampleCheck1">Check me out</label>
-        </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
-    <button onclick="show()">Edit</button>
-</div>
-
 
 <script>
-    
+    var origin = document.querySelector('.origin');
+    var changePasswordForm = document.querySelector('.change-password-form');
+    var editBtn = document.querySelector('.password-edit-btn');
     function show()
     {
-        var x = document.getElementById("form1");
-        if( x.style.display === "none")
-           x.style.display="block";
+        
+        if( changePasswordForm.style.display === "none") {
+            changePasswordForm.style.display="block";
+            origin.style.display = "none"
+            editBtn.style.display = "none";
+        }
+        else { 
+            changePasswordForm.style.display="none";
+            origin.style.display = "block"
+            editBtn.style.display = "block";
+        }
             
-        else
-            x.style.display="none";
     }
 </script>
