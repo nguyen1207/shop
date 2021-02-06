@@ -1,0 +1,38 @@
+<div class="container emp-profile">
+    <form>
+        <div class="row">
+            <div class="col-md-4">
+                
+            </div>
+            <div class="col-md-8">
+                <div class="profile-head">
+                    <h2>
+                        Purchase history
+                    </h2>  
+                    <hr class="rounded">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="profile-menu">
+                    <p style="margin-top: 0; margin-bottom: 12px">Account</p>
+                    <a href="/account/personal-information/{{user._id}}">Personal information</a><br/>
+                    <a href="/account/payment-methods/{{user._id}}">Payment methods</a><br/>
+                    <a href="/account/security&sign-in/{{user._id}}" style="margin-right: 100px;">Security and sign in</a>
+                    <a href="/account/purchase-history/{{user._id}}">Purchase history</a>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="tab-content profile-tab" id="myTabContent">
+                    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                        <div class="row">
+                            <p>We are currently working on this feature</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </form>           
+</div>

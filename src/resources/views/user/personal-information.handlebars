@@ -1,0 +1,82 @@
+<div class="container emp-profile">
+    <form>
+        <div class="row">
+            <div class="col-md-4">
+                
+            </div>
+            <div class="col-md-8">
+                <div class="profile-head">
+                    <h2>
+                        Personal Information
+                    </h2>
+                    <hr class="rounded">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="profile-menu">
+                    <p style="margin-top: 0; margin-bottom: 12px">Account</p>
+                    <a href="/account/personal-information/{{user._id}}">Personal information</a><br/>
+                    <a href="/account/payment-methods/{{user._id}}">Payment methods</a><br/>
+                    <a href="/account/security&sign-in/{{user._id}}" style="margin-right: 100px;">Security and sign in</a>
+                    <a href="/account/purchase-history/{{user._id}}">Purchase history</a>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="tab-content profile-tab" id="myTabContent">
+                    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                        <div class="row">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Full name</label>
+                            </div>
+                            <div class="col-md-6">
+                                <p>{{user.firstName}} {{user.lastName}}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Email</label>
+                            </div>
+                            <div class="col-md-6 d-flex">
+                                <p style="margin-right: 10px">{{user.email}}</p>
+                                <span class="oi oi-circle-check" style="margin-top: 2px; margin-right: 4px; color: green"></span>
+                                <p style="margin-top: 3px; color: green; font-size: 12px; verified-icon">Verified</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Phone number</label>
+                            </div>
+                            <div class="col-md-6">
+                                {{#if user.phone}}
+                                    <p>{{user.phone}}</p>
+                                {{else}}
+                                    <p style="color: gray">Please update your phone number</p>
+                                {{/if}}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Address</label>
+                            </div>
+                            <div class="col-md-6">
+                                {{#if user.address}}
+                                    <p>{{user.address}}</p>
+                                {{else}}
+                                    <p style="color: gray">Please update your address</p>
+                                {{/if}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                    <input type="submit" class="profile-edit-btn" style="float: right; width: 110px" name="btnAddMore" value="Edit Profile"/>
+                
+            </div>
+            
+        </div>
+    </form>           
+</div>

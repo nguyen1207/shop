@@ -31,7 +31,11 @@ app.use(renderUser);
 
 app.engine('handlebars', handlebars({
   helpers: {
-    
+    showDotPassword: password => {
+      const passwordArray = password.split('', 12);
+      const dotPassword = passwordArray.map(value => '•');
+      return dotPassword.join('');
+    }
   }
 }));
 app.set('view engine', 'handlebars');

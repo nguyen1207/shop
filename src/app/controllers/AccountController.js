@@ -71,18 +71,59 @@ class AccountController {
         res.render('./authenticate/sign-up', {layout: 'mainNoHeader'});
     }
 
-    // [GET] /account/:_id
-    async myAccount(req, res, next) {
+    // [GET] /account/personal-information/:_id
+    async personalInformation(req, res, next) {
         
         try {
             const id = req.params._id;
             const user = await User.findById(id);
-            res.send(user);
+            res.render('./user/personal-information', {user: mongooseToObject(user)});
         }
         catch (err) {
-
+            console.log(err);
         }
     }
+
+    // [GET] /account/payment-method/:_id
+    async paymentMethods(req, res, next) {
+        
+        try {
+            const id = req.params._id;
+            const user = await User.findById(id);
+            res.render('./user/payment-methods', {user: mongooseToObject(user)});
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }
+
+    // [GET] /account/security&sign-in/:_id
+    async securityAndSignIn(req, res, next) {
+        
+        try {
+            const id = req.params._id;
+            const user = await User.findById(id);
+            res.render('./user/security-sign-in', {user: mongooseToObject(user)});
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }
+
+    // [GET] /account/purchase-history/:_id
+    async purchaseHistory(req, res, next) {
+        
+        try {
+            const id = req.params._id;
+            const user = await User.findById(id);
+            res.render('./user/purchase-history', {user: mongooseToObject(user)});
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }
+
+
 
     // [POST] /account/sign-up
     async storeAccount(req, res, next) {
