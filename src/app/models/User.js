@@ -20,6 +20,12 @@ const User = new Schema({
         unique: true, 
         lowercase: true,
     },
+    phone: {
+        type: Number,
+    },
+    address: {
+        type: String,
+    },
     password: { 
         type: String, 
         required: [true, 'Please enter a password'], 

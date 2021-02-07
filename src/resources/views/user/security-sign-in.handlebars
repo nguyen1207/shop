@@ -51,12 +51,20 @@
                 </div>
 
                 <form class="change-password-form" style="display: none;">
+                    <div class="row">
+                        <div class="col-md-6"></div>
+                        <div class="col-md-6">
+                            <div class="password-error error"></div>
+                            <div class="password-success success"></div>
+                        </div>
+                    </div>
                     <div class="row" style="height: 50px">
                         <div class="col-md-6">
+                            
                             <label>Current password</label>
                         </div>
                         <div class="col-md-6">
-                             <input type="password" class="form-control" id="current-password" name="current-password" required>
+                             <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
                         </div>
                     </div>
                     <div class="row" style="height: 70px">
@@ -64,16 +72,16 @@
                             <label>New password</label>
                         </div>
                         <div class="col-md-6">
-                            <input type="password" class="form-control" id="new-password" name="new-password" required>
+                            <input type="password" class="form-control" id="newPassword" name="newPassword" required>
                             <p style="color: gray; font-size: 14px">Your password must be at least 6 characters</p>
                         </div>
                     </div>
                     <div class="row" style="height: 50px">
                         <div class="col-md-6">
-                            <label>Verify your password</label>
+                            <label>Confirm your password</label>
                         </div>
                         <div class="col-md-6">
-                            <input type="password" class="form-control" id="verify-password" name="verify-password" required>
+                            <input type="password" class="form-control" id="confirm" name="confirm" required>
                         </div>
                     </div>
                     
@@ -107,9 +115,11 @@
 </div>
 
 <script>
-    var origin = document.querySelector('.origin');
-    var changePasswordForm = document.querySelector('.change-password-form');
-    var editBtn = document.querySelector('.password-edit-btn');
+    const origin = document.querySelector('.origin');
+    const changePasswordForm = document.querySelector('.change-password-form');
+    const editBtn = document.querySelector('.password-edit-btn');
+    const passwordError = document.querySelector('.password-error');
+    const passwordSuccess = document.querySelector('.password-success');
     function show()
     {
         
@@ -125,4 +135,43 @@
         }
             
     }
+    
+    changePasswordForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        //Reset error
+        passwordError.textContent = '';
+        passwordSuccess.textContent = '';
+
+        const pathname = window.location.pathname; // /account/security&sign-in/:token
+        const currentPassword = changePasswordForm.currentPassword.value;
+        const newPassword = changePasswordForm.newPassword.value;
+        const confirmPassword = changePasswordForm.confirm.value
+
+        if(confirmPassword !== newPassword) {
+            passwordError.textContent = 'Your password does not match';
+            return;  
+            
+        }
+
+        try {
+            const res = await fetch(pathname, {
+                method: 'PUT',
+                body: JSON.stringify({currentPassword: currentPassword, newPassword: newPassword}),
+                headers: {'Content-Type': 'application/json'},
+            });
+            const data = await res.json();
+            console.log(data);
+            if(data.errors) {
+                passwordError.textContent = data.errors.password;
+            }
+            if(data.user) {
+                passwordSuccess.textContent = 'Your password has been changed';
+            }
+        }
+        catch(err) {    
+            console.log(err);
+        }
+    })
+
 </script>

@@ -48,6 +48,11 @@ const handleErrors = (err) => {
         errors.password = 'You have used this link to reset your password or has been expired. Please try again.';
     }
 
+    // CHANGE PASSWORD: Incorrect current password
+    if(err.message === 'You entered incorrect password') {
+        errors.password = 'You entered incorrect password';
+    }
+
     // Validate errors
     if(err.message.includes('User validation failed')) {
         Object.values(err.errors).forEach(({ properties }) => {
@@ -107,6 +112,42 @@ class AccountController {
         }
         catch (err) {
             console.log(err);
+        }
+    }
+
+    // [PUT] /account/security&sign-in/:_id
+    async changePassword(req, res, next) {
+        try {
+            const id = req.params._id;
+            const user = await User.findById(id);
+            if(!user) {
+                throw Error('Cannot find user');
+            }
+
+            let currentPassword = req.body.currentPassword
+            let newPassword = req.body.newPassword;
+            console.log(currentPassword);
+            console.log(newPassword);
+            if(newPassword.length < 6) {
+                throw Error('Password must be at least 6 characters');
+            }
+            const auth = await bcrypt.compare(currentPassword, user.password);
+            if(!auth) {
+                throw Error('You entered incorrect password');
+            } 
+
+            const salt = await bcrypt.genSalt();
+            newPassword = await bcrypt.hash(newPassword, salt);
+
+            
+
+            await user.updateOne({password: newPassword});
+            res.status(200).json({user: user._id});
+        }
+        catch(err) {
+            const errors = handleErrors(err);
+            console.log(err);
+            res.status(400).json({errors});
         }
     }
 
