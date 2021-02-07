@@ -53,6 +53,11 @@ const handleErrors = (err) => {
         errors.password = 'You entered incorrect password';
     }
 
+    // CHANGE PASSWORD: New password is the same as current password
+    if(err.message === 'New password must be different from current password') {
+        errors.password = 'New password must be different from current password';
+    }
+
     // Validate errors
     if(err.message.includes('User validation failed')) {
         Object.values(err.errors).forEach(({ properties }) => {
@@ -130,6 +135,9 @@ class AccountController {
             console.log(newPassword);
             if(newPassword.length < 6) {
                 throw Error('Password must be at least 6 characters');
+            }
+            if(newPassword === currentPassword) {
+                throw Error('New password must be different from current password');
             }
             const auth = await bcrypt.compare(currentPassword, user.password);
             if(!auth) {
