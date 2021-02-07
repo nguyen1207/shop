@@ -159,6 +159,22 @@ class AccountController {
         }
     }
 
+    // [PUT] /account/personal-information/:id
+    async updateProfile(req, res, next) {
+        try{
+            const {firstName, lastName, phone, address} = req.body;
+            const id = req.params._id;
+            const user = await User.findById(id)
+
+            await user.updateOne({firstName: firstName, lastName: lastName, phone: phone, address: address});
+            res.status(200).json({user});
+        }
+        catch(err) {
+            console.log(err)
+            res.status(400).json({err});
+        }
+    }
+
     // [GET] /account/purchase-history/:_id
     async purchaseHistory(req, res, next) {
         
@@ -179,8 +195,6 @@ class AccountController {
         try {
             // Create new user       
             const user = await User.create(req.body);
-            const token = createToken(user._id);
-            
             
             res.status(201).json({user: user._id});
         }

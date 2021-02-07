@@ -91,7 +91,7 @@
                         <div class="col-md-6">
                             <div class="d-flex" style="float: right">
                                 <button type="submit" class="btn btn-primary" style="margin-right: 12px;">Save</button>
-                                <button onclick="show()" class="btn btn-secondary">Cancel</button>
+                                <button type="button" onclick="show()" class="btn btn-secondary">Cancel</button>
                             </div>
                         </div>
                     </div>
@@ -167,6 +167,9 @@
             }
             if(data.user) {
                 passwordSuccess.textContent = 'Your password has been changed';
+                setTimeout(() => {
+                    location.assign(pathname);
+                }, 1000)
             }
         }
         catch(err) {    

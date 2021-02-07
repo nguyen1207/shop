@@ -67,7 +67,14 @@
                     </div>
                 </div>
 
-                <form class="edit-profile-form" style="display: none;">
+                <form class="profile-edit-form" style="display: none;">
+                    <div class="row">
+                        <div class="col-md-6"></div>
+                        <div class="col-md-6">
+                            <div class="profile-edit-error error"></div>
+                            <div class="profile-edit-success success"></div>
+                        </div>
+                    </div>
                     <div class="row" style="height: 50px">
                         <div class="col-md-6">
                             <label>First name</label>
@@ -81,7 +88,7 @@
                             <label>Last name</label>
                         </div>
                         <div class="col-md-6">
-                             <input type="text" class="form-control" id="lastName" name="lastName" value="{{user.lastName}}"required>
+                            <input type="text" class="form-control" id="lastName" name="lastName" value="{{user.lastName}}"required>
                         </div>
                     </div>
                     <div class="row" style="height: 70px">
@@ -89,8 +96,8 @@
                             <label>Email</label>
                         </div>
                         <div class="col-md-6">
-                             <input type="email" class="form-control" id="email" name="email" value="{{user.email}}" disabled>
-                             <p style="color: gray; font-size: 14px">You cannot change your email address</p>
+                            <input type="email" class="form-control" id="email" name="email" value="{{user.email}}" disabled>
+                            <p style="color: gray; font-size: 14px">You cannot change your email address</p>
                         </div>
                     </div>
                     <div class="row" style="height: 50px">
@@ -98,7 +105,7 @@
                             <label>Phone</label>
                         </div>
                         <div class="col-md-6">
-                             <input type="number" class="form-control" id="phone" name="phone" value="{{user.phone}}"required>
+                            <input type="number" class="form-control" id="phone" name="phone" value="{{user.phone}}"required>
                         </div>
                     </div>
                     <div class="row" style="height: 50px">
@@ -106,12 +113,12 @@
                             <label>Address</label>
                         </div>
                         <div class="col-md-6">
-                             <input type="text" class="form-control" id="address" name="address" value="{{user.address}}"required>
+                            <input type="text" class="form-control" id="address" name="address" value="{{user.address}}"required>
                         </div>
                     </div>
                     <div class="d-flex" style="float: right">
                         <button type="submit" class="btn btn-primary" style="margin-right: 12px;">Save</button>
-                        <button onclick="show()" class="btn btn-secondary">Cancel</button>
+                        <button type="button" onclick="show()" class="btn btn-secondary">Cancel</button>
                     </div>
                 </form>
                 <input type="submit" onclick="show()" class="profile-edit-btn" style="float: right; width: 110px" name="btnAddMore" value="Edit Profile"/>
@@ -121,9 +128,12 @@
 </div>
 
 <script>
-    var origin = document.querySelector('.origin');
-    var editBtn = document.querySelector('.profile-edit-btn');
-    var editProfileForm = document.querySelector('.edit-profile-form')
+    const origin = document.querySelector('.origin');
+    const editBtn = document.querySelector('.profile-edit-btn');
+    const editProfileForm = document.querySelector('.profile-edit-form');
+    const editProfileError = document.querySelector('.profile-edit-error');
+    const success = document.querySelector('.profile-edit-success');
+    
     function show() {
         if( editProfileForm.style.display === "none") {
             editProfileForm.style.display="block";
@@ -136,4 +146,46 @@
             editBtn.style.display = "block";
         }
     }
+
+    editProfileForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const pathname = window.location.pathname; // /account/personal-information/:id
+        const firstName = editProfileForm.firstName.value;
+        const lastName = editProfileForm.lastName.value;
+        const phone = editProfileForm.phone.value;
+        const address = editProfileForm.address.value;
+
+        // Reset error
+        editProfileError.textContent = '';
+
+        try {
+            if(phone.length !== 10) {
+                editProfileError.textContent = 'Please enter a valid phone number';
+                return;
+            }
+            const res = await fetch(pathname, {
+                method: 'PUT',
+                body: JSON.stringify({firstName: firstName, lastName: lastName, phone: phone, address: address}),
+                headers: {'Content-Type': 'application/json'},
+            });
+            
+            const data = await res.json();
+            console.log(data);
+            if(data.error) {
+                editProfileError.textContent = 'Something went wrong. Please try again';
+            }
+            if(data.user) {
+                success.textContent = 'Your profile is being updated. Please wait';
+                
+                setTimeout(() => {
+                    location.assign(pathname);
+                }, 1000)
+            }
+        }
+        catch(err) {
+            console.log(err);
+        }
+    })
+
 </script>
