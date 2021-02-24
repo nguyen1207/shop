@@ -7,7 +7,53 @@
     <div class="collapse navbar-collapse" id="navbarResponsive">
       <ul class="navbar-nav ml-auto">
         <li class="nav-item">
-          <span class="oi oi-cart" style="margin-top: 50%; margin-right: 4px"></span>
+          <div class="dropdown">
+              <button type="button" class="btn btn-cart btn-info" style="padding: 0; border: none; background: none;" data-toggle="dropdown">
+                <i class="oi oi-cart" style="color: black" aria-hidden="true"></i>
+                {{#if session.cart.totalQuantity}} 
+                  <span class="badge badge-pill badge-dark">{{session.cart.totalQuantity}}</span>
+                {{/if}}
+              </button>
+              <div class="dropdown-menu">
+                {{#if session.cart.totalQuantity}}
+                  <div class="row total-header-section">
+                      <div class="col-lg-6 col-sm-6 col-6" style="margin-top: auto; margin-bottom: auto;">
+                        <p><span style="font-size: 16px; color: rgb(159, 159, 160);">{{session.cart.totalQuantity}} items</span></p>
+                      </div>
+                      <div class="col-lg-6 col-sm-6 col-6 total-section text-right">
+                        <p><span style="font-size: 22px; color: rgb(15, 184, 15);">${{displayTwoDecimalPlaces session.cart.totalPrice}}</span></p>
+                      </div>
+                  </div>
+                  <div class="cart-items">
+                    {{#each session.cart.items}}
+                    <div class="row cart-detail">
+                      <div class="col-lg-5 col-sm-5 col-5 cart-detail-img">
+                        <img src="{{this.item.image}}">
+                      </div>
+                      <div class="col-lg-5 col-sm-5 col-5 cart-detail-product">
+                        <p style="font-size: 13px">{{this.item.name}}</p>
+                        <span style="font-size: 12px; color: rgb(173, 169, 169)">{{this.quantity}} x ${{displayTwoDecimalPlaces this.item.price}}</span>
+                        <span class="price text-info">${{displayTwoDecimalPlaces this.price}}</span> 
+                      </div>
+                        <div class="col-lg-2 col-sm-2 col-2">
+                          <a href="/remove/{{this.item._id}}" class="remove-from-cart-btn btn badge badge-pill badge-secondary" >X</a>
+                        </div>
+                    </div>
+                    {{/each}}
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-12 col-sm-12 col-12 text-center checkout">
+                      <a href="/checkout" class="btn btn-checkout btn-cart btn-primary btn-block">Checkout</a>
+                    </div>
+                  </div>
+                {{else}}
+                  <div style="text-align: center">
+                    <h3>0 items in your cart</h3>
+                    <p>Go ahead and add something!</p>
+                  </div>
+                {{/if}}
+              </div>
+          </div>
         </li>
         {{#if user}}
             <li class="nav-item">
@@ -26,4 +72,19 @@
   </div>
 </nav>
 
+<script>
+  const dropdownCart = document.querySelector('.dropdown-menu');
+  const removeFromCartBtns = document.querySelectorAll('.remove-from-cart-btn');
 
+  dropdownCart.addEventListener('click', function(e) {
+    e.stopPropagation();
+  })
+  removeFromCartBtns.forEach(removeFromCartBtn => {
+    removeFromCartBtn.addEventListener('click', function (e) {
+      
+      console.log(removeFromCartBtn)
+      
+    })
+  })
+
+</script>

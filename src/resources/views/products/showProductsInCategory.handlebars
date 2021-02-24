@@ -1,15 +1,23 @@
-<div class="mt-4">
+<div style="margin-top: 5%">
     <div class="row"> 
         {{#each products}}
-        <div class="col-sm-6 col-lg-3">
-            <div class="card card-item align-items-center" style="height: 17rem; border: none">
-                <a href="/category/{{this.category}}/{{this.name}}/{{this._id}}" style="text-decoration : none; color : #000;">
-                    <img class="card-img-top image-home mt-2 rounded mx-auto d-block" src="{{this.image}}" alt="Card image cap">
-                    <h5 class="card-title name-home rounded text-center">{{this.name}}</h5>
-                    <p class="card-text">${{this.price}}</p>
-                </a>     
+            <div class="col-sm-6 col-lg-3">
+                <div class="card card-item align-items-center" style="height: 17rem; border: none">
+                    <a href="/category/{{this.category}}/{{this.name}}/{{this._id}}" style="text-decoration : none; color : #000;">
+                        <img class="card-img-top image-home mt-2 rounded mx-auto d-block" src="{{this.image}}" alt="Card image cap">
+                        <div class="product-name card-title name-home rounded" style="height: 42px; width: 255px">
+                            <h6>{{this.name}}</h6>
+                        </div>
+                        <div class="card-text price">
+                            <p>${{displayTwoDecimalPlaces this.price}}</p>
+                        </div>
+                    </a>     
+                </div>
             </div>
-        </div>
+        {{else}}
+            <div class="col-sm-12" align="center">
+                <h2>Products are being updated</h2>
+            </div>
         {{/each}}
     </div>
 </div>

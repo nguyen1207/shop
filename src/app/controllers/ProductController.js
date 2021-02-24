@@ -1,4 +1,5 @@
 const Product = require('../models/Product');
+const Cart = require('../models/Cart');
 const {mongooseToObject} = require('../../util/mongoose');
 const {multipleMongooseToObject} = require("../../util/mongoose");
 
@@ -21,6 +22,9 @@ class ProductController {
             })
             .catch(next)
     }
+
+    
+
 }
 
 module.exports = new ProductController;

@@ -3,7 +3,9 @@ const morgan = require('morgan');
 const handlebars  = require('express-handlebars');
 const path = require('path');
 const cookieParser = require('cookie-parser');
-;
+const mongoose = require('mongoose');
+const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
 
 require('dotenv').config();
 const app = express();
@@ -12,7 +14,7 @@ const port = process.env.PORT;
 const route = require('./routes');
 const db = require('./config/db');
 
-const {renderUser} = require('./app/middlewares/authenticateMiddleware')
+const {renderUser} = require('./app/middlewares/authenticateMiddleware');
 
 // Connect to database
 db.connect();
@@ -25,6 +27,18 @@ app.use(express.urlencoded({
 app.use(express.json());
 app.use(cookieParser());
 
+app.use(session({
+  secret: 'supersecrectstring',
+  resave: false,
+  saveUninitialized: false,
+  store: new MongoStore({ mongooseConnection: mongoose.connection }),
+  cookie: { maxAge: 180 * 60 * 1000 },
+}))
+
+app.use(function(req, res, next) {
+  res.locals.session = req.session;
+  next();
+})
 
 app.use(renderUser);
 
@@ -35,7 +49,11 @@ app.engine('handlebars', handlebars({
       const passwordArray = password.split('', 12);
       const dotPassword = passwordArray.map(value => '•');
       return dotPassword.join('');
-    }
+    },
+    displayTwoDecimalPlaces: price => {
+      return price.toFixed(2);
+    },
+    
   }
 }));
 app.set('view engine', 'handlebars');

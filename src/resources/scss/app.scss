@@ -4,6 +4,15 @@
     margin-top: 14px;
 }
 
+.product-name {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    
+}
+
 .image-home {
     width: 160px;
     height: 160px;  
@@ -166,10 +175,127 @@
     background-size: cover;
 }
 
+.dropdown{
+	float:right;
+	padding-right: 30px;
+}
+.btn-cart{
+	border:0px;
+	margin:10px 0px;
+	box-shadow:none !important; 
+}
+.dropdown .dropdown-menu{
+	padding:20px;
+	top:52px !important;
+	width:460px !important;
+    max-height: 500px;
+	left:-385px !important;
+	box-shadow:0px 5px 30px black;
+}
+.btn-checkout {
+    margin: 0 auto;
+    padding: 0;
+    display: inline-block;
+    line-height: 50px;
+    text-align: center;
+}
+.cart-items {
+    height: 330px;
+    max-width: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    
+}
+.total-header-section{
+	border-bottom:1px solid #d2d2d2;
+}
+.total-section p{
+	margin-bottom:20px;
+}
+.cart-detail{
+	padding:15px 0px;
+}
+.cart-detail-img img{
+	width:100%;
+	height:100%;
+	padding-left:15px;
+}
+.cart-detail-product p{
+	margin:0px;
+	color:#000;
+	font-weight:500;
+}
+.cart-detail .price{
+	font-size:16px;
+	margin-right:4px;
+	font-weight:500;
+    float:right;
+}
+.cart-detail .count{
+	color: rgba(108, 117, 240, 0.89);
+    font-size: 14px;
+}
+.checkout{
+	border-top:1px solid #d2d2d2;	
+	padding-top: 15px;
+}
+.checkout .btn-primary{
+	border-radius:50px;
+	height:50px;
+}
+.dropdown-menu:before{
+  content: " ";
+  position:absolute;
+  top:-20px;
+  right:50px;
+  border:10px solid transparent;
+  border-bottom-color:#fff; 
+}
 
-.hidden {
-    padding: 15px;
-    border: 1px solid #666;
+::-webkit-scrollbar {
+    background-color: #fff;
+    width: 16px;
+}
+
+/* background of the scrollbar except button or resizer */
+::-webkit-scrollbar-track {
+    background-color: #fff;
+}
+
+/* scrollbar itself */
+::-webkit-scrollbar-thumb {
+    background-color: #babac0;
+    border-radius: 16px;
+    border: 4px solid #fff;
+}
+
+/* set button(top and bottom of the scrollbar) */
+::-webkit-scrollbar-button {
+    display:none;
+}
+
+// checkout
+
+.emp-checkout{
+    padding: 3%;
+    margin-top: 3%;
+    margin-bottom: 3%;
+    border-radius: 0.5rem;
     background: #fff;
-    display: block;
-  }
+}
+
+.checkout-head h2{
+    color: #0062cc;
+}
+
+.checkout-cart-items {
+    max-height: 500px;
+    max-width: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.item-price-details {
+    display: inline;
+}
+

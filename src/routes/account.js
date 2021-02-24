@@ -16,10 +16,10 @@ router.put('/forgot-password', accountController.checkForgotPassword);
 router.get('/reset/:token', blockAuthenicateSides,accountController.resetPassword);
 router.put('/reset/:token', accountController.checkResetPassword);
 router.get('/personal-information/:_id', requireAuth, checkCurrentUser, accountController.personalInformation);
-router.put('/personal-information/:_id', accountController.updateProfile);
+router.put('/personal-information/:_id', requireAuth, accountController.updateProfile);
 router.get('/payment-methods/:_id', requireAuth, checkCurrentUser, accountController.paymentMethods);
 router.get('/security&sign-in/:_id', requireAuth, checkCurrentUser, accountController.securityAndSignIn);
-router.put('/security&sign-in/:_id', accountController.changePassword);
+router.put('/security&sign-in/:_id', requireAuth, accountController.changePassword);
 router.get('/purchase-history/:_id', requireAuth, checkCurrentUser, accountController.purchaseHistory);
 
 module.exports = router;

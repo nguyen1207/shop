@@ -61,8 +61,9 @@
         const firstName = signUpForm.firstName.value;
         const lastName = signUpForm.lastName.value;
         const confirmPassword = signUpForm.confirm.value;
-
-        
+        var cartRows = cartItemContainer.getElementsByClassName('row');
+        var id = cartRow.dataset.itemId;
+        console.log(id)
         try {
             
             if(confirmPassword !== password) {
