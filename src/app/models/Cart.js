@@ -27,6 +27,21 @@ module.exports = function Cart(oldCart) {
         delete this.items[id];
     }
 
+    this.changeQuantity = function(item, id, newQuantity) {
+        var storedItem = this.items[id];  
+        var oldQuantity = storedItem.quantity;
+
+        // Update the quantity and price of the item
+        storedItem.quantity = newQuantity;
+        storedItem.price = Math.round( storedItem.item.price * newQuantity * 100 ) / 100;
+
+        // Update the total price and quanity in cart
+        this.totalQuantity = this.totalQuantity - oldQuantity + newQuantity;
+        this.totalPrice -= storedItem.item.price * oldQuantity;
+        this.totalPrice = Math.round( (this.totalPrice + storedItem.item.price * newQuantity) * 100 ) / 100
+
+    }
+
     this.generateArray = function() {
         var arr = [];
         for (var id in this.items) { 

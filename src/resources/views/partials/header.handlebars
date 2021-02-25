@@ -74,17 +74,10 @@
 
 <script>
   const dropdownCart = document.querySelector('.dropdown-menu');
-  const removeFromCartBtns = document.querySelectorAll('.remove-from-cart-btn');
 
   dropdownCart.addEventListener('click', function(e) {
     e.stopPropagation();
   })
-  removeFromCartBtns.forEach(removeFromCartBtn => {
-    removeFromCartBtn.addEventListener('click', function (e) {
-      
-      console.log(removeFromCartBtn)
-      
-    })
-  })
+  
 
 </script>

@@ -26,7 +26,7 @@
                         </div>
                         <div class="checkout-cart-items" style="margin-top: 20px">
                             {{#each products}}
-                            <div class="shop-item" data-item-id="{{this.item._id}}">
+                            <div class="shop-item" id="{{this.item._id}}" data-item-id="{{this.item._id}}">
                                 <div class="row cart-row">
                                     <div class="col-md-2">
                                         <img src="{{this.item.image}}" alt="item-image" style="width: 100%; height: 100%">
@@ -43,7 +43,18 @@
                                         </div>
                                     </div>
                                     <div class="col-md-2">
-                                        <h6 class="quantity" style="font-size: 14px" data-quantity="{{this.quantity}}">{{this.quantity}}</h6>
+                                            <div class="quantity" style="font-size: 14px" data-quantity="{{this.quantity}}">
+                                                <form method="GET" class="change-quantity-form" id="{{this.item._id}}" action="/change-quantity/{{this.item._id}}">
+                                                    <label for="quantity-select" style="font-size: 12px; color: gray">Qty</label>
+                                                    <select id="{{this.item._id}}" class="form-select form-select-lg mb-3 quantity-select" id="quantity" name="quantity" style="width: 50px; height: 40px" onchange="changeQuantity(id, value)">
+                                                        <option value="1">1</option>
+                                                        <option value="2">2</option>
+                                                        <option value="3">3</option>
+                                                        <option value="4">4</option>
+                                                        <option value="5">5</option>
+                                                    </select>
+                                                </form>
+                                            </div>
                                     </div>
                                     <div class="col-md-2">
                                         <div class="checkout-cart-sumary-price">
@@ -74,4 +85,27 @@
 </div>
 
 
+<script>
 
+    // Set default values for quantity in select box
+    var itemQuantityElements = document.querySelectorAll('.quantity');
+    var shopItemElements = document.querySelectorAll('.shop-item');
+    
+
+    shopItemElements.forEach(function(shopItemElement) {
+        var quantityElement = shopItemElement.getElementsByClassName('quantity')[0];
+        var quantity = quantityElement.dataset.quantity;
+        var id = shopItemElement.dataset.itemId;
+        var selectQuantityOptionElement = quantityElement.getElementsByClassName('quantity-select')[0];
+        selectQuantityOptionElement.value = quantity;
+    })
+    
+    // Submit form when user change quantity of products
+    changeQuantity = function(productId, quantity) {
+        var shopItemElement = document.getElementById(`${productId}`);
+        var changeQuantityForm = shopItemElement.getElementsByClassName('change-quantity-form')[0];
+        changeQuantityForm.submit()
+        
+    }
+
+</script>

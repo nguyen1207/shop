@@ -10,5 +10,6 @@ router.get('/remove/:_id', siteController.removeFromCart);
 router.get('/checkout', requireAuth, siteController.checkout);
 router.post('/purchase', siteController.purchase);
 router.get('/purchase-success', checkSessionIdStripe, siteController.purchaseSuccess);
+router.get('/change-quantity/:_id', siteController.changeQuantity);
 
 module.exports = router;

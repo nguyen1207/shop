@@ -23,9 +23,23 @@ class SiteController {
             .then(product => {
                 cart.add(product, product._id, productQuantity);
                 req.session.cart = cart;
-                console.log(cart);
                 res.redirect(`/category/${product.category}`);
             })
+            .catch(next)
+        
+    }
+
+    // [GET] /change-quantity/:_id
+    changeQuantity(req, res, next) {
+        const productId = req.params._id;
+        const quantity = parseInt(req.query.quantity);
+        var cart = new Cart(req.session.cart);
+        Product.findById(productId)
+            .then(product => {
+                cart.changeQuantity(product, productId, quantity);
+                req.session.cart = cart;
+                res.redirect('back');
+            })  
             .catch(next)
         
     }
@@ -46,7 +60,7 @@ class SiteController {
            return res.render('checkout', {products: null});
         }
         var cart = new Cart(req.session.cart);
-
+        console.log(cart);
         res.render('checkout', {layout: 'mainNoHeader', products: cart.generateArray(), totalQuantity: cart.totalQuantity, totalPrice: cart.totalPrice, stripePublicKey: stripePublicKey});
     }
     
