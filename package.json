@@ -5,7 +5,6 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "startdev": "nodemon --inspect src/index.js",
     "watch": "node-sass --watch src/resources/scss/ --output src/public/css/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
