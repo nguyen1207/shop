@@ -1,6 +1,7 @@
 const {multipleMongooseToObject} = require("../../util/mongoose")
 var Cart = require('../models/Cart');
 const Product = require('../models/Product');
+const Order = require('../models/Order');
 
 const stripePublicKey = process.env.STRIPE_PUBLIC_KEY;
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
@@ -50,7 +51,6 @@ class SiteController {
         var cart = new Cart(req.session.cart ? req.session.cart : {});
         cart.remove(productID);
         req.session.cart = cart;
-        console.log(cart);
         res.redirect('back');
     }
 
@@ -60,7 +60,6 @@ class SiteController {
            return res.render('checkout', {products: null});
         }
         var cart = new Cart(req.session.cart);
-        console.log(cart);
         res.render('checkout', {layout: 'mainNoHeader', products: cart.generateArray(), totalQuantity: cart.totalQuantity, totalPrice: cart.totalPrice, stripePublicKey: stripePublicKey});
     }
     
@@ -92,17 +91,30 @@ class SiteController {
             payment_method_types: ['card'],
             line_items: orders,
             mode: 'payment',
+            customer_email: res.locals.user.email,
             success_url: 'http://localhost:3000/purchase-success?session_id={CHECKOUT_SESSION_ID}',
             cancel_url: 'http://localhost:3000/checkout',
         })
         
-        
         res.json({ id: session.id });
+        
     }
 
-    purchaseSuccess(req, res, next) {
-        req.session.cart = {};
-        res.render('purchase-success', {layout: 'mainNoHeader'});
+    async purchaseSuccess(req, res, next) {
+        const session = await stripe.checkout.sessions.retrieve(req.query.session_id);
+        
+        if(session.payment_status === 'paid') {
+            
+            const order = await Order.create({
+                id: session.payment_intent,
+                customerEmail: session.customer_email,
+                price: session.amount_total,
+                items: req.session.cart.items,
+            });
+            req.session.cart = {};
+            res.render('purchase-success', {layout: 'mainNoHeader'});
+        }
+        
     }
 
 }   

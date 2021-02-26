@@ -1,9 +1,10 @@
-const User = require('../models/User')
+const User = require('../models/User');
+const Order = require('../models/Order');
 const createToken = require('../../util/createToken');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const bcrypt = require('bcryptjs');
-const {mongooseToObject} = require('../../util/mongoose');
+const {mongooseToObject, multipleMongooseToObject} = require('../../util/mongoose');
 const THREE_DAYS = 3 * 24 * 60 * 60 * 1000;
 
 
@@ -181,7 +182,10 @@ class AccountController {
         try {
             const id = req.params._id;
             const user = await User.findById(id);
-            res.render('./user/purchase-history', {user: mongooseToObject(user)});
+            const order = await Order.find({customerEmail: user.email});
+            
+            console.log(order);
+            res.render('./user/purchase-history', {user: mongooseToObject(user), order: multipleMongooseToObject(order)});
         }
         catch (err) {
             console.log(err);

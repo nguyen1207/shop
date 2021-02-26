@@ -53,7 +53,9 @@ app.engine('handlebars', handlebars({
     displayTwoDecimalPlaces: price => {
       return price.toFixed(2);
     },
-    
+    centToDollar: cent => {
+      return (cent / 100).toFixed(2);
+    }
   }
 }));
 app.set('view engine', 'handlebars');

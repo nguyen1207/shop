@@ -1,38 +1,69 @@
 <div class="container emp-profile">
-    <form>
-        <div class="row">
-            <div class="col-md-4">
-                
-            </div>
-            <div class="col-md-8">
-                <div class="profile-head">
-                    <h2>
-                        Purchase history
-                    </h2>  
-                    <hr class="rounded">
-                </div>
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-8">
+            <div class="profile-head">
+                <h2>
+                    Purchase history
+                </h2>  
+                <hr class="rounded">
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="profile-menu">
-                    <p style="margin-top: 0; margin-bottom: 12px">Account</p>
-                    <a href="/account/personal-information/{{user._id}}">Personal information</a><br/>
-                    <a href="/account/payment-methods/{{user._id}}">Payment methods</a><br/>
-                    <a href="/account/security&sign-in/{{user._id}}" style="margin-right: 100px;">Security and sign in</a>
-                    <a href="/account/purchase-history/{{user._id}}">Purchase history</a>
-                </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="profile-menu">
+                <p style="margin-top: 0; margin-bottom: 12px">Account</p>
+                <a href="/account/personal-information/{{user._id}}">Personal information</a><br/>
+                <a href="/account/payment-methods/{{user._id}}">Payment methods</a><br/>
+                <a href="/account/security&sign-in/{{user._id}}" style="margin-right: 100px;">Security and sign in</a>
+                <a href="/account/purchase-history/{{user._id}}">Purchase history</a>
             </div>
-            <div class="col-md-8">
-                <div class="tab-content profile-tab" id="myTabContent">
-                    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+        </div>
+        <div class="col-md-8">
+            <div class="tab-content profile-tab" id="myTabContent">
+                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                    <div class="purchase-list">
                         <div class="row">
-                            <p>We are currently working on this feature</p>
+                            {{#if order}}
+                                {{#each order}}
+                                    <div class="col-sm-12">
+                                        <div class="purchase-time" style="width: 100%">
+                                            <h6>{{this.payAt}}</h6>
+                                        </div>
+                                        <div class="id" style="width: 100%">
+                                            <p style="font-size: 12px; color: gray">Payment ID: {{this.id}}</p>
+                                        </div>
+                                    </div>
+                                    {{#each this.items}}
+                                        <div class="col-sm-8" style="margin-top: 12px">
+                                            <div class="product-name">
+                                                <h6>{{this.item.name}}</h6>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <div class="quantity text-center">
+                                                <h6>{{this.quantity}}</h6>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <div class="item-price text-right" style="color: green">
+                                                <h6>${{displayTwoDecimalPlaces this.price}}</h6>
+                                            </div>
+                                        </div>
+                                    {{/each}}
+                                    <div class="total-price text-right" style="width: 100%; color: green">
+                                        <h5>Subtotal: ${{centToDollar this.price}}</h5>
+                                        <hr class="rounded">
+                                    </div>
+                                {{/each}}
+                            {{else}}
+                                <p>You have not purchased anything yet.</p>
+                            {{/if}}
                         </div>
                     </div>
                 </div>
             </div>
-            
         </div>
-    </form>           
+    </div>           
 </div>
