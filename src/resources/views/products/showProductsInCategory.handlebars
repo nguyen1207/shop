@@ -3,7 +3,7 @@
         {{#each products}}
             <div class="col-sm-6 col-lg-3">
                 <div class="card card-item align-items-center" style="height: 17rem; border: none">
-                    <a href="/category/{{this.category}}/{{this.name}}/{{this._id}}" style="text-decoration : none; color : #000;">
+                    <a href="/category/{{this.category}}/{{replaceForwardSlash this.name}}/{{this._id}}" style="text-decoration : none; color : #000;">
                         <img class="card-img-top image-home mt-2 rounded mx-auto d-block" src="{{this.image}}" alt="Card image cap">
                         <div class="product-name card-title name-home rounded" style="height: 42px; width: 255px">
                             <h6>{{this.name}}</h6>
@@ -20,4 +20,35 @@
             </div>
         {{/each}}
     </div>
+    <div class="row mt-4" style="justify-content: center;">
+        {{#if previousPage}}
+            <a id="previous" class="btn btn-outline-primary page" href="/category/{{category}}?page={{previousPage}}" value="{{previousPage}}" style="font-size: 30px; margin-left: 16px; padding: 0px"> < </a>
+        {{/if}}
+        {{#for maxPage}}
+            <a id="{{this}}" class="btn btn-outline-primary page" href="/category/{{../category}}?page={{this}}">{{this}}</a>
+        {{/for}}
+        {{#if nextPage}}
+            <a id="next" class="btn btn-outline-primary page" href="/category/{{category}}?page={{nextPage}}" value="{{nextPage}}" style="font-size: 30px; margin-left: 16px; padding: 0px"> > </a>
+        {{/if}}
+    </div>
 </div>
+
+<script>
+    const nextPageElement = document.querySelector('#next');
+    const previousPageElement = document.querySelector('#previous');
+    let nextPage, previousPage, currentPage;
+    
+    if(nextPageElement) {
+        nextPage = parseInt(nextPageElement.getAttribute("value"));
+    }
+    if(previousPageElement) {
+        previousPage = parseInt(previousPageElement.getAttribute("value"));
+    }
+
+    currentPage = nextPage - 1 || previousPage + 1 || 1;
+    
+    const currentPageElement = document.getElementById(`${currentPage}`);
+    currentPageElement.style.background = "#4A84E9";
+    currentPageElement.style.color = "white";
+    currentPageElement.style.fontWeight = "bold";
+</script>

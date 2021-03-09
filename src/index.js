@@ -53,8 +53,17 @@ app.engine('handlebars', handlebars({
     displayTwoDecimalPlaces: price => {
       return price.toFixed(2);
     },
+    replaceForwardSlash: name => {
+      return name.replace(/\//g, '%2F');
+    },
     centToDollar: cent => {
       return (cent / 100).toFixed(2);
+    },
+    for: (n, block) => {
+      var accum = '';
+      for(var i = 0; i < n; ++i)
+        accum += block.fn(i + 1);
+      return accum;
     }
   }
 }));

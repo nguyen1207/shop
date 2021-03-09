@@ -7,11 +7,10 @@ class ProductController {
 
     // [GET] /category/:category
     showProductsInCategory(req, res, next) {
-        Product.find({category: req.params.category})
-            .then(products => {
-                res.render('./products/showProductsInCategory', { products: multipleMongooseToObject(products) });
-            })
-            .catch(next)
+        const category = req.params.category;
+        const products = res.paginatedResults.models;
+        const {maxPage, nextPage, previousPage} = res.paginatedResults;
+        res.render('./products/showProductsInCategory', {products: multipleMongooseToObject(products),category: category, maxPage: maxPage, nextPage: nextPage, previousPage: previousPage});
     }
 
     // [GET] /category/:category/product/:name/:_id
@@ -21,9 +20,7 @@ class ProductController {
                 res.render('./products/showProductDetails', { product: mongooseToObject(product) });
             })
             .catch(next)
-    }
-
-    
+    }   
 
 }
 

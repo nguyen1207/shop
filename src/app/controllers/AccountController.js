@@ -74,12 +74,12 @@ const handleErrors = (err) => {
 class AccountController {
     // [GET] /sign-in
     signIn(req, res, next) {
-        res.render('./authenticate/sign-in', {layout: 'mainNoHeader'});
+        res.render('./authenticate/sign-in', {layout: 'mainBodyOnly'});
     }
 
     // [GET] /account/sign-up
     signUp(req, res, next) {
-        res.render('./authenticate/sign-up', {layout: 'mainNoHeader'});
+        res.render('./authenticate/sign-up', {layout: 'mainBodyOnly'});
     }
 
     // [GET] /account/personal-information/:_id
@@ -178,18 +178,10 @@ class AccountController {
 
     // [GET] /account/purchase-history/:_id
     async purchaseHistory(req, res, next) {
+        const orders = res.paginatedResults.models;
+        const {maxPage, nextPage, previousPage} = res.paginatedResults;
+        res.render('./user/purchase-history', {order: multipleMongooseToObject(orders), maxPage: maxPage, nextPage: nextPage, previousPage: previousPage});
         
-        try {
-            const id = req.params._id;
-            const user = await User.findById(id);
-            const order = await Order.find({customerEmail: user.email});
-            
-            console.log(order);
-            res.render('./user/purchase-history', {user: mongooseToObject(user), order: multipleMongooseToObject(order)});
-        }
-        catch (err) {
-            console.log(err);
-        }
     }
 
 
@@ -218,7 +210,7 @@ class AccountController {
             const user = await User.findById(id);
             console.log(user);
             if(user) {
-                res.render('./authenticate/sign-up-verification', {layout: 'mainNoHeader', user: mongooseToObject(user)});
+                res.render('./authenticate/sign-up-verification', {layout: 'mainBodyOnly', user: mongooseToObject(user)});
                 
                 const token = jwt.sign({_id: user._id}, process.env.ACCOUNT_VERIFICATION_KEY);
 
@@ -256,7 +248,7 @@ class AccountController {
 
     // [GET] /account/verify/:token
     verifySuccess(req, res, next) {
-        res.render('./authenticate/verify-success', {layout: 'mainNoHeader'});
+        res.render('./authenticate/verify-success', {layout: 'mainBodyOnly'});
     }
 
     // [POST] /sign-in
@@ -291,7 +283,7 @@ class AccountController {
 
     // [GET] /account/forgot-password
     forgotPassword(req, res, next) {
-        res.render('./authenticate/forgot-password', {layout: 'mainNoHeader'});
+        res.render('./authenticate/forgot-password', {layout: 'mainBodyOnly'});
     }
 
     // [PUT] /account/forgot-password
@@ -340,7 +332,7 @@ class AccountController {
             if(err) {
                 res.status(400).json({error: 'This link is invalid or has been expired'});
             }
-            res.render('./authenticate/reset',{layout: 'mainNoHeader'});
+            res.render('./authenticate/reset',{layout: 'mainBodyOnly'});
         })
         
     }

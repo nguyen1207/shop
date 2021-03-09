@@ -10,8 +10,18 @@ const stripe = require('stripe')(stripeSecretKey);
 class SiteController {
 
     // [GET] /
-    index(req, res, next) {
+    index(req, res, next) { 
         res.render('home');
+    
+    }
+
+    // [GET] /search
+    search(req, res, next) {
+        const products = res.paginatedResults.models;
+        const keywords = req.query.q;
+        const {maxPage, nextPage, previousPage} = res.paginatedResults;
+        res.render('search', {products: multipleMongooseToObject(products), q: keywords, maxPage: maxPage, nextPage: nextPage, previousPage: previousPage});
+        
     }
 
     // [GET] /add-to-cart/:_id
@@ -20,13 +30,14 @@ class SiteController {
         const productQuantity = parseInt(req.query.quantity);
 
         var cart = new Cart(req.session.cart ? req.session.cart : {});
-        Product.findById(productID)
-            .then(product => {
+        Product.findById(productID, function (err, product) {
+            if(err) return next(err);
+            if(product) { 
                 cart.add(product, product._id, productQuantity);
                 req.session.cart = cart;
                 res.redirect(`/category/${product.category}`);
-            })
-            .catch(next)
+            }
+        })
         
     }
 
@@ -35,14 +46,17 @@ class SiteController {
         const productId = req.params._id;
         const quantity = parseInt(req.query.quantity);
         var cart = new Cart(req.session.cart);
-        Product.findById(productId)
-            .then(product => {
+        Product.findById(productId, function (err, product) {
+            if(err) {
+                return next(err);
+            }
+            if(product) {
                 cart.changeQuantity(product, productId, quantity);
                 req.session.cart = cart;
                 res.redirect('back');
-            })  
-            .catch(next)
-        
+            }
+        })
+
     }
 
     // [GET] /remove/:_id
@@ -60,7 +74,7 @@ class SiteController {
            return res.render('checkout', {products: null});
         }
         var cart = new Cart(req.session.cart);
-        res.render('checkout', {layout: 'mainNoHeader', products: cart.generateArray(), totalQuantity: cart.totalQuantity, totalPrice: cart.totalPrice, stripePublicKey: stripePublicKey});
+        res.render('checkout', {layout: 'mainBodyOnly', products: cart.generateArray(), totalQuantity: cart.totalQuantity, totalPrice: cart.totalPrice, stripePublicKey: stripePublicKey});
     }
     
     // [POST] /purchase
@@ -112,7 +126,7 @@ class SiteController {
                 items: req.session.cart.items,
             });
             req.session.cart = {};
-            res.render('purchase-success', {layout: 'mainNoHeader'});
+            res.render('purchase-success', {layout: 'mainBodyOnly'});
         }
         
     }

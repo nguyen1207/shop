@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const accountController = require('../app/controllers/AccountController');
+const Order = require('../app/models/Order');
 const { requireAuth, checkVerificationLink, checkCurrentUser, blockAuthenicateSides } = require('../app/middlewares/authenticateMiddleware');
+const paginationOrders = require('../app/middlewares/paginationOrders');
 
 
 router.get('/sign-in', blockAuthenicateSides, accountController.signIn);
@@ -20,6 +22,6 @@ router.put('/personal-information/:_id', requireAuth, accountController.updatePr
 router.get('/payment-methods/:_id', requireAuth, checkCurrentUser, accountController.paymentMethods);
 router.get('/security&sign-in/:_id', requireAuth, checkCurrentUser, accountController.securityAndSignIn);
 router.put('/security&sign-in/:_id', requireAuth, accountController.changePassword);
-router.get('/purchase-history/:_id', requireAuth, checkCurrentUser, accountController.purchaseHistory);
+router.get('/purchase-history/:_id', requireAuth, checkCurrentUser, paginationOrders(Order), accountController.purchaseHistory);
 
 module.exports = router;

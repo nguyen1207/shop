@@ -64,6 +64,37 @@
                     </div>
                 </div>
             </div>
+            <div class="row mt-4" style="justify-content: center">
+                {{#if previousPage}}
+                    <a id="previous" class="btn btn-outline-primary page" href="/account/purchase-history/{{user._id}}?page={{previousPage}}" style="font-size: 20px; margin-left: 16px; padding: 6px;" value="{{previousPage}}"> < </a>
+                {{/if}}
+                {{#for maxPage}}
+                    <a id="{{this}}" class="btn btn-outline-primary page" href="/account/purchase-history/{{../user._id}}?page={{this}}">{{this}}</a>
+                {{/for}}
+                {{#if nextPage}}
+                    <a id="next" class="btn btn-outline-primary page" href="/account/purchase-history/{{user._id}}?page={{nextPage}}" style="font-size: 20px; margin-left: 16px; padding: 6px;" value="{{nextPage}}"> > </a>
+                {{/if}}
+            </div>
         </div>
     </div>           
 </div>
+
+<script>
+    const nextPageElement = document.querySelector('#next');
+    const previousPageElement = document.querySelector('#previous');
+    let nextPage, previousPage, currentPage;
+    
+    if(nextPageElement) {
+        nextPage = parseInt(nextPageElement.getAttribute("value"));
+    }
+    if(previousPageElement) {
+        previousPage = parseInt(previousPageElement.getAttribute("value"));
+    }
+
+    currentPage = nextPage - 1 || previousPage + 1 || 1;
+    
+    const currentPageElement = document.getElementById(`${currentPage}`);
+    currentPageElement.style.background = "#4A84E9";
+    currentPageElement.style.color = "white";
+    currentPageElement.style.fontWeight = "bold";
+</script>
