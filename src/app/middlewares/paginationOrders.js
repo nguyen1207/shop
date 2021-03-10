@@ -10,7 +10,7 @@ function paginationOrders(model) {
             // Find total models in page
             numberOfModels = await model.find({customerEmail: res.locals.user.email}).countDocuments();
 
-            results.models = await model.find({customerEmail: res.locals.user.email}).limit(limit).skip(startIndex);
+            results.models = await model.find({customerEmail: res.locals.user.email}).sort({payAt: -1}).limit(limit).skip(startIndex);
             res.paginatedResults = results;
             
             const maxPage = Math.ceil(numberOfModels / limit);
