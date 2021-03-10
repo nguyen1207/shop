@@ -2,6 +2,9 @@ html, body {
   height: 100%;
   margin: 0; }
 
+.navbar {
+  width: 100%; }
+
 .container {
   min-height: 80%; }
 
@@ -169,8 +172,7 @@ html, body {
   background-size: cover; }
 
 .dropdown {
-  float: right;
-  padding-right: 30px; }
+  float: right; }
 
 .btn-cart {
   border: 0px;
