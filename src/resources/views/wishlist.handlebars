@@ -1,0 +1,62 @@
+<div    style="margin-top: 5%">
+    <div class="row">
+        <div class="col-sm-12">
+            <h2>Your wishlist</h2>
+        </div>
+    </div>
+    {{#each products}}
+        <div id="{{this._id}}" class="row mt-4">
+            <div class="col-md-4">
+                <a href="/category/{{this.category}}/{{replaceForwardSlash this.name}}/{{this._id}}">
+                    <img src="{{this.image}}" alt="product-image" style="display: block; margin: auto; width: 100px; height: 100px">
+                </a>
+            </div>
+            <div class="col-md-6">
+                <a href="/category/{{this.category}}/{{replaceForwardSlash this.name}}/{{this._id}}" style="text-decoration: none">
+                    <p style="color: grey; font-weight: 600">{{this.name}}</p>
+                </a>
+                <div class="wishlist">
+                    <button type="button" class="btn" onclick="removeFromWishlist(this)">Remove</button>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <h6 style="text-align: right; font-weight: bold">${{displayTwoDecimalPlaces this.price}}</h6>
+                <form method="GET" action="/add-to-cart/{{this._id}}">
+                    <div class="d-flex align-items-center">
+                        <label for="quantity-form" style="font-size: 12px; color: gray">Qty</label>
+                        <select class="form-control quantity-form" name="quantity">
+                            <option value="1">1</option> 
+                            <option value="2">2</option>
+                        </select>
+                        <button type="submit" class="btn btn-primary">Add to cart</button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-12">
+                <hr class="solid">
+            </div>
+        </div>
+        
+    {{else}}
+        <h6>Empty</h6>
+        <h6>You can add your favourite items here.</h6>
+    {{/each}}
+</div>
+
+<script>
+    function removeFromWishlist(removeFromWishlistBtn) {   
+        // Get elements to modify
+        const productElement = removeFromWishlistBtn.parentNode.parentNode.parentNode;
+        const productId = productElement.id;
+        const data = JSON.stringify({productId: productId});
+
+        // Send product's id to backend
+        const xhr = new XMLHttpRequest();
+        xhr.open('PUT', '/remove-from-wishlist', true);
+        xhr.setRequestHeader('Content-type', 'application/json');
+        xhr.send(data);
+        
+        // Delete product element
+        productElement.remove();
+    }
+</script>

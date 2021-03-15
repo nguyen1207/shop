@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
+const methodOverride = require('method-override');
 
 require('dotenv').config();
 const app = express();
@@ -26,6 +27,7 @@ app.use(express.urlencoded({
 }));
 app.use(express.json());
 app.use(cookieParser());
+app.use(methodOverride('_method'))
 
 app.use(session({
   secret: 'supersecrectstring',
@@ -64,7 +66,7 @@ app.engine('handlebars', handlebars({
       for(var i = 0; i < n; ++i)
         accum += block.fn(i + 1);
       return accum;
-    }
+    },
   }
 }));
 app.set('view engine', 'handlebars');

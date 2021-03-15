@@ -39,6 +39,9 @@ const User = new Schema({
         type: Boolean,
         default: false,
     },
+    wishList: {
+        type: Array,
+    },
     createdAt: {
         type: Date, 
         default: Date.now

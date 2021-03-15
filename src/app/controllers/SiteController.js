@@ -1,7 +1,8 @@
-const {multipleMongooseToObject} = require("../../util/mongoose")
+const {multipleMongooseToObject, mongooseToObject} = require("../../util/mongoose")
 var Cart = require('../models/Cart');
 const Product = require('../models/Product');
 const Order = require('../models/Order');
+const User = require('../models/User');
 
 const stripePublicKey = process.env.STRIPE_PUBLIC_KEY;
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
@@ -114,6 +115,7 @@ class SiteController {
         
     }
 
+    // [GET] /purchase-success
     async purchaseSuccess(req, res, next) {
         const session = await stripe.checkout.sessions.retrieve(req.query.session_id);
         
@@ -128,6 +130,49 @@ class SiteController {
             req.session.cart = {};
             res.render('purchase-success', {layout: 'mainBodyOnly'});
         }
+        
+    }
+
+    // [GET] /wishlist/:_id
+    wishlist(req, res, next) {
+        const userId = res.locals.user._id;
+        User.findById(userId)
+            .then(user => {
+                const wishlistedIds = user.wishList;
+                return mongooseToObject(wishlistedIds);
+            })
+            .then(wishlistedIds => {
+                const products = Product.find({ '_id': { $in: wishlistedIds } });
+                return products;
+            })
+            .then(products => {
+                res.render('wishlist', {products: multipleMongooseToObject(products)})
+            })
+            .catch(next);
+    }
+
+    // [PUT] /add-to-wishlist
+    addToWishlist(req, res, next) {
+        if(!res.locals.user) return res.json({err: 'not logged in'});
+        const userId = res.locals.user._id;
+        const {productId} = req.body;
+        
+        User.findByIdAndUpdate({_id: userId}, {$push: {wishList: productId}}, {new: true}, function(err, user) {
+            if(err) return console.log(err);
+            res.json({wishListedIds: user.wishList})
+        });
+        
+    }
+
+    // [PUT] /remove-from-wishlist
+    removeFromWishlist(req, res, next) {
+        const userId = res.locals.user._id;
+        const {productId} = req.body;
+        
+        User.findByIdAndUpdate({_id: userId}, {$pull: {wishList: productId}}, {new: true}, function(err, user) {
+            if(err) return console.log(err);
+            res.json({wishListedIds: user.wishList})
+        });
         
     }
 

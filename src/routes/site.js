@@ -14,5 +14,8 @@ router.post('/purchase', siteController.purchase);
 router.get('/purchase-success', checkSessionIdStripe, siteController.purchaseSuccess);
 router.get('/change-quantity/:_id', siteController.changeQuantity);
 router.get('/search', pagination(Product), siteController.search);
+router.get('/wishlist', requireAuth, siteController.wishlist);
+router.put('/add-to-wishlist', siteController.addToWishlist);
+router.put('/remove-from-wishlist', siteController.removeFromWishlist);
 
-module.exports = router;
+module.exports = router;    

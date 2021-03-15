@@ -1,18 +1,23 @@
 <div style="margin-top: 5%">
     <div class="row"> 
         {{#each products}}
-            <div class="col-sm-6 col-lg-3">
-                <div class="card card-item align-items-center" style="height: 17rem; border: none">
+            <div class="col-sm-6 col-lg-3" style="padding: 0">
+                <div class="card card-item" style="height: 19rem; border: none">
                     <a href="/category/{{this.category}}/{{replaceForwardSlash this.name}}/{{this._id}}" style="text-decoration : none; color : #000;">
                         <img class="card-img-top image-home mt-2 rounded mx-auto d-block" src="{{this.image}}" alt="Card image cap">
                         <div class="product-name card-title name-home rounded" style="height: 42px; width: 255px">
                             <h6>{{this.name}}</h6>
                         </div>
-                        <div class="card-text price">
+                        <div class="card-text price d-flex">
                             <p>${{displayTwoDecimalPlaces this.price}}</p>
                         </div>
-                    </a>     
+                    </a>
+                    <div id="{{this._id}}" class="wish-list" style="margin:auto">
+                        <button class="far fa-heart fa-lg add-to-wishlist" onclick="addToWishlist(this)" ></button>
+                        <button class="fas fa-heart fa-lg remove-from-wishlist" onclick="removeFromWishlist(this)" style="display: none"></button>
+                    </div>  
                 </div>
+                <hr class="rounded">
             </div>
         {{else}}
             <div class="col-sm-12" align="center">
@@ -51,4 +56,73 @@
     currentPageElement.style.background = "#4A84E9";
     currentPageElement.style.color = "white";
     currentPageElement.style.fontWeight = "bold";
+
+    // Wishlist logic
+  
+    
+    function renderWishlist() {
+        let wishlistedIds = '{{user.wishList}}'.split(',');
+
+        for(var i = 0; i < wishlistedIds.length; i++) {
+            const wishListElement = document.getElementById(wishlistedIds[i]);
+            let addToWishlistBtn, removeFromWishlistBtn;
+            
+            // Check if wishlistElement exist on current page
+            if(wishListElement) {
+                addToWishlistBtn = wishListElement.getElementsByClassName('add-to-wishlist')[0];
+                removeFromWishlistBtn = wishListElement.getElementsByClassName('remove-from-wishlist')[0];
+                addToWishlistBtn.style.display = 'none';
+                removeFromWishlistBtn.style.display = 'block';
+            }      
+        }
+    }
+    
+    renderWishlist();
+
+    function addToWishlist(addToWishlistBtn) {
+        // Get elements to modify
+        const wishlistElement = addToWishlistBtn.parentNode;
+        const removeFromWishlistBtn = wishlistElement.getElementsByClassName('remove-from-wishlist')[0];
+        const productId = wishlistElement.id;
+
+        // Send product's id to backend
+        const data = JSON.stringify({productId: productId});
+        var xhr = new XMLHttpRequest();
+
+        xhr.open('PUT', '/add-to-wishlist', true);
+        // If user not signed in
+        xhr.onload = function() {
+            if(this.status == 200 && JSON.parse(xhr.response).err) {
+                return location.assign('/account/sign-in')
+            }
+        }
+        xhr.setRequestHeader('Content-type', 'application/json');
+        xhr.send(data);
+
+        // Render wishlist element
+        addToWishlistBtn.style.display = 'none';
+        removeFromWishlistBtn.style.display = 'block';
+        
+    }
+
+    function removeFromWishlist(removeFromWishlistBtn) {   
+        // Get elements to modify
+        const wishlistElement = removeFromWishlistBtn.parentNode;
+        const addToWishlistBtn = wishlistElement.getElementsByClassName('add-to-wishlist')[0];
+        const productId = wishlistElement.id;
+
+        // Send product's id to backend
+        const data = JSON.stringify({productId: productId});
+        var xhr = new XMLHttpRequest();
+        xhr.open('PUT', '/remove-from-wishlist', true);
+        xhr.setRequestHeader('Content-type', 'application/json');
+        xhr.send(data);
+
+        // Render wishlist element
+        addToWishlistBtn.style.display = 'block';
+        removeFromWishlistBtn.style.display = 'none';
+        
+    }
+    
+
 </script>
