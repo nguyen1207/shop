@@ -1,5 +1,4 @@
 const express = require('express');
-const morgan = require('morgan');
 const handlebars  = require('express-handlebars');
 const path = require('path');
 const cookieParser = require('cookie-parser');
@@ -20,7 +19,7 @@ const {renderUser} = require('./app/middlewares/authenticateMiddleware');
 // Connect to database
 db.connect();
 
-app.use(morgan('combined'));
+
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({
   extended: true,
